@@ -1,0 +1,13 @@
+#ifndef MAGMA_KEYS_H
+#define MAGMA_KEYS_H
+
+#include <stdlib.h>
+#include <string.h>
+
+#define MASTER_KEY_LEN 32
+#define ITER_KEYS_COUNT 32
+#define ITER_KEY_LEN 4
+
+void get_keys_from_master_key(const unsigned char master_key[MASTER_KEY_LEN], unsigned char result_keys[ITER_KEYS_COUNT][ITER_KEY_LEN]);
+
+#endif
