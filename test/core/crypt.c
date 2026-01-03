@@ -55,7 +55,7 @@ Test(crypt, encode) {
 
     unsigned char result[8] = {0};
 
-    encode(plain_text, result, keys);
+    magma_encrypt_block(plain_text, result, keys);
 
     char result_str[16];
     bytes_to_hex(result, result_str, 8);
@@ -77,7 +77,7 @@ Test(crypt, decode) {
 
     unsigned char result[8] = {0};
 
-    decode(plain_text, result, keys);
+    magma_decrypt_block(plain_text, result, keys);
 
     char result_str[16];
     bytes_to_hex(result, result_str, 8);

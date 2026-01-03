@@ -1,6 +1,6 @@
 #include "modes/imit.h"
 
-void imit_crypt(unsigned char *input, ImitCtx *ctx)
+void magma_encrypt_imit(unsigned char *input, ImitCtx *ctx)
 {
     unsigned char previous_cipher_block[8] = {0};
     unsigned char result[8] = {0};
@@ -8,12 +8,12 @@ void imit_crypt(unsigned char *input, ImitCtx *ctx)
 
     memcpy(first_plain_block, input, 8);
 
-    encode(first_plain_block, previous_cipher_block, ctx->keys);
+    magma_encrypt_block(first_plain_block, previous_cipher_block, ctx->keys);
 
     memcpy(result, previous_cipher_block, 8);
 
     unsigned i = 1;
-    for (;i < (ctx->lenght / 8) - 1; i++) {
+    for (;i < (ctx->length / 8) - 1; i++) {
         unsigned char plain_block[8] = {0};
         unsigned char cipher_block[8] = {0};
 
@@ -23,7 +23,7 @@ void imit_crypt(unsigned char *input, ImitCtx *ctx)
             plain_block[j] ^= previous_cipher_block[j];
         }
 
-        encode(plain_block, cipher_block, ctx->keys);
+        magma_encrypt_block(plain_block, cipher_block, ctx->keys);
 
         for (unsigned j = 0; j < 8; j++) {
             previous_cipher_block[j] = cipher_block[j];
@@ -35,9 +35,9 @@ void imit_crypt(unsigned char *input, ImitCtx *ctx)
 
     calc_additional_keys(K1, K2, ctx->keys);
 
-    const unsigned char *lastKey = ctx->lenght % 8 == 0 ? K1 : K2;
+    const unsigned char *lastKey = ctx->length % 8 == 0 ? K1 : K2;
 
-    if (i <= ctx->lenght / 8) {
+    if (i <= ctx->length / 8) {
         unsigned char plain_block[8] = {0};
         unsigned char cipher_block[8] = {0};
 
@@ -51,7 +51,7 @@ void imit_crypt(unsigned char *input, ImitCtx *ctx)
             plain_block[j] ^= lastKey[j];
         }
 
-        encode(plain_block, cipher_block, ctx->keys);
+        magma_encrypt_block(plain_block, cipher_block, ctx->keys);
 
         for (unsigned j = 0; j < 8; j++) {
             result[j] = cipher_block[j];
@@ -68,7 +68,7 @@ void calc_additional_keys(unsigned char K1_output[8], unsigned char K2_output[8]
     unsigned char zero[8] = {0};
     unsigned char R[8];
 
-    encode(zero, R, keys);
+    magma_encrypt_block(zero, R, keys);
 
     int msb_r = (R[0] & 0x80) != 0;
 

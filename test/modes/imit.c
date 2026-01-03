@@ -30,7 +30,7 @@ Test(test_modes, calc_additional_keys) {
     cr_assert(memcmp(K2_str, expected_K2, 16) == 0);
 }
 
-Test(test_modes, imit_crypt) {
+Test(test_modes, magma_encrypt_imit) {
     
     unsigned char plain_text[32];
     hex_to_bytes("92def06b3c130a59db54c704f8189d204a98fb2e67a8024c8912409b17b57e41", plain_text, 64);
@@ -39,11 +39,11 @@ Test(test_modes, imit_crypt) {
     hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
 
     ImitCtx *ctx = calloc(1, sizeof(ImitCtx));
-    ctx->lenght = 32;
+    ctx->length = 32;
 
     get_keys_from_master_key(master_key, ctx->keys);
 
-    imit_crypt(plain_text, ctx);
+    magma_encrypt_imit(plain_text, ctx);
 
     char result_str[8] = {0};
     bytes_to_hex(ctx->mac, result_str, 4);

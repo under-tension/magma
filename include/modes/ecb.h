@@ -9,10 +9,9 @@
 
 typedef struct {
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-    size_t lenght;
 } EcbCtx;
 
-void ecb_crypt(unsigned char *input, unsigned char *output, EcbCtx *ctx);
-void ecb_decrypt(unsigned char *input, unsigned char *output, EcbCtx *ctx);
+void magma_encrypt_ecb(EcbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
+void magma_decrypt_ecb(EcbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
 
 #endif

@@ -9,12 +9,11 @@
 
 typedef struct {
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-    size_t lenght;
     unsigned char *iv;
-    size_t iv_lenght;
+    size_t iv_length;
 } OfbCtx;
 
-void ofb_crypt(unsigned char *input, unsigned char *output, OfbCtx *ctx);
-void ofb_decrypt(unsigned char *input, unsigned char *output, OfbCtx *ctx);
+void magma_encrypt_ofb(OfbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
+void magma_decrypt_ofb(OfbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
 
 #endif

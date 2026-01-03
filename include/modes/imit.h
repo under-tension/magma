@@ -9,11 +9,11 @@
 
 typedef struct {
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-    size_t lenght;
+    size_t length;
     unsigned char mac[4];
 } ImitCtx;
 
-void imit_crypt(unsigned char *input, ImitCtx *ctx);
+void magma_encrypt_imit(unsigned char *input, ImitCtx *ctx);
 void calc_additional_keys(unsigned char K1_output[8], unsigned char K2_output[8], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN]);
 
 #endif

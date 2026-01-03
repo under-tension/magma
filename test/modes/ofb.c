@@ -5,7 +5,7 @@
 #include <criterion/criterion.h>
 #include <string.h>
 
-Test(test_ctr, ofb_crypt) {
+Test(test_ofb, magma_encrypt_ofb) {
     unsigned char plain_text[32];
     hex_to_bytes("92def06b3c130a59db54c704f8189d204a98fb2e67a8024c8912409b17b57e41", plain_text, 64);
 
@@ -16,15 +16,14 @@ Test(test_ctr, ofb_crypt) {
     hex_to_bytes("1234567890abcdef234567890abcdef1", iv, 32);
 
     OfbCtx *ctx = calloc(1, sizeof(OfbCtx));
-    ctx->lenght = 32;
     ctx->iv = iv;
-    ctx->iv_lenght = 16;
+    ctx->iv_length = 16;
 
     get_keys_from_master_key(master_key, ctx->keys);
 
     unsigned char result[32] = {0};
 
-    ofb_crypt(plain_text, result, ctx);
+    magma_encrypt_ofb(ctx, plain_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);
@@ -34,7 +33,7 @@ Test(test_ctr, ofb_crypt) {
     cr_assert(memcmp(result_str, expected_result, 64) == 0);
 }
 
-Test(test_ctr, ofb_decrypt) {
+Test(test_ofb, magma_decrypt_ofb) {
     unsigned char cipher_text[32];
     hex_to_bytes("db37e0e266903c830d46644c1f9a089ca0f83062430e327ec824efb8bd4fdb05", cipher_text, 64);
 
@@ -45,15 +44,14 @@ Test(test_ctr, ofb_decrypt) {
     hex_to_bytes("1234567890abcdef234567890abcdef1", iv, 32);
 
     OfbCtx *ctx = calloc(1, sizeof(OfbCtx));
-    ctx->lenght = 32;
     ctx->iv = iv;
-    ctx->iv_lenght = 16;
+    ctx->iv_length = 16;
 
     get_keys_from_master_key(master_key, ctx->keys);
 
     unsigned char result[32] = {0};
 
-    ofb_decrypt(cipher_text, result, ctx);
+    magma_decrypt_ofb(ctx, cipher_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);

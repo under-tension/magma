@@ -36,7 +36,7 @@ uint32_t feistel(const uint32_t plaintext, const uint32_t key)
     return result;
 }
 
-void encode(const unsigned char plain_text[8], unsigned char cipher_text[8], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
+void magma_encrypt_block(const unsigned char plain_text[MAGMA_BLOCK_SIZE], unsigned char cipher_text[MAGMA_BLOCK_SIZE], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
 {
   uint32_t left = bytes_to_uint32_be(plain_text);
   uint32_t right = bytes_to_uint32_be(plain_text + 4);
@@ -57,7 +57,7 @@ void encode(const unsigned char plain_text[8], unsigned char cipher_text[8], con
   uint32_to_bytes_be(right, cipher_text+4);
 }
 
-void decode(const unsigned char plain_text[8], unsigned char cipher_text[8], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
+void magma_decrypt_block(const unsigned char plain_text[8], unsigned char cipher_text[8], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
 {
   uint32_t left = bytes_to_uint32_be(plain_text);
   uint32_t right = bytes_to_uint32_be(plain_text + 4);

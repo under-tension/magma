@@ -1,14 +1,14 @@
 #include "modes/ecb.h"
 
-void ecb_crypt(unsigned char *input, unsigned char *output, EcbCtx *ctx)
+void magma_encrypt_ecb(EcbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length)
 {
-    for (unsigned i = 0; i < (ctx->lenght / 8); i++) {
+    for (unsigned i = 0; i < (length / 8); i++) {
         unsigned char plain_block[8] = {0};
         unsigned char cipher_block[8] = {0};
 
         memcpy(plain_block, input + (i * 8), 8);
 
-        encode(plain_block, cipher_block, ctx->keys);
+        magma_encrypt_block(plain_block, cipher_block, ctx->keys);
 
         for (unsigned j = 0; j < 8; j++) {
             output[(i * 8) + j] = cipher_block[j];
@@ -16,15 +16,15 @@ void ecb_crypt(unsigned char *input, unsigned char *output, EcbCtx *ctx)
     }
 }
 
-void ecb_decrypt(unsigned char *input, unsigned char *output, EcbCtx *ctx)
+void magma_decrypt_ecb(EcbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length)
 {
-    for (unsigned i = 0; i < (ctx->lenght / 8); i++) {
+    for (unsigned i = 0; i < (length / 8); i++) {
         unsigned char plain_block[8] = {0};
         unsigned char cipher_block[8] = {0};
 
         memcpy(plain_block, input + (i * 8), 8);
 
-        decode(plain_block, cipher_block, ctx->keys);
+        magma_decrypt_block(plain_block, cipher_block, ctx->keys);
 
         for (unsigned j = 0; j < 8; j++) {
             output[(i * 8) + j] = cipher_block[j];

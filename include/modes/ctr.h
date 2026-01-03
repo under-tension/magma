@@ -9,11 +9,10 @@
 
 typedef struct {
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-    size_t lenght;
     uint32_t iv;
 } CtrCtx;
 
-void ctr_crypt(unsigned char *input, unsigned char *output, CtrCtx *ctx);
-void ctr_decrypt(unsigned char *input, unsigned char *output, CtrCtx *ctx);
+void magma_encrypt_ctr(CtrCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
+void magma_decrypt_ctr(CtrCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
 
 #endif
