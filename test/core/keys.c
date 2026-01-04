@@ -14,7 +14,8 @@ Test(test_keys, gen_keys_from_master_key) {
     unsigned char result_keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
     memset(result_keys, 0, ITER_KEYS_COUNT * ITER_KEY_LEN);
 
-    get_keys_from_master_key(master_key_hex, result_keys);
+    MagmaResult key_result = key_expand(master_key_hex, result_keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
     char expected_keys[ITER_KEYS_COUNT][8] = {
         "ffeeddcc",

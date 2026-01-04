@@ -1,6 +1,6 @@
 #include "modes/ctr.h"
 
-void magma_encrypt_ctr(
+MagmaResult magma_encrypt_ctr(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char iv[CTR_IV_LENGTH], 
     const unsigned char *input,
@@ -8,6 +8,10 @@ void magma_encrypt_ctr(
     const size_t length
 )
 {
+    if (keys == NULL || iv == NULL || input == NULL || output == NULL) {
+        return MAGMA_ERROR_NULL_POINTER;
+    }
+
     uint32_t counter = 0;
     unsigned char counter_bytes[MAGMA_BLOCK_SIZE] = {0};
     memcpy(counter_bytes, iv, CTR_IV_LENGTH);
@@ -17,7 +21,11 @@ void magma_encrypt_ctr(
 
         uint32_to_bytes_be(counter, counter_bytes + 4);
 
-        magma_encrypt_block(counter_bytes, cipher_block, keys);
+        MagmaResult encrypt_block_result = magma_encrypt_block(counter_bytes, cipher_block, keys);
+
+        if (encrypt_block_result != MAGMA_SUCCESS) {
+            return encrypt_block_result;
+        }
 
         for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             output[(i * MAGMA_BLOCK_SIZE) + j] = input[(i * MAGMA_BLOCK_SIZE) + j] ^ cipher_block[j];
@@ -25,9 +33,11 @@ void magma_encrypt_ctr(
 
         counter++;
     }
+
+    return MAGMA_SUCCESS;
 }
 
-void magma_decrypt_ctr(
+MagmaResult magma_decrypt_ctr(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char iv[CTR_IV_LENGTH], 
     const unsigned char *input,

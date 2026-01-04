@@ -17,11 +17,13 @@ Test(test_ctr, magma_encrypt_ctr) {
     hex_to_bytes("12345678", iv, 8);
 
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
-    get_keys_from_master_key(master_key, keys);
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
     unsigned char result[32] = {0};
 
-    magma_encrypt_ctr(keys, iv, plain_text, result, 32);
+    MagmaResult encrypt_result = magma_encrypt_ctr(keys, iv, plain_text, result, 32);
+    cr_assert(encrypt_result == MAGMA_SUCCESS);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);
@@ -43,11 +45,13 @@ Test(test_ctr, magma_decrypt_ctr) {
     hex_to_bytes("12345678", iv, 8);
 
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
-    get_keys_from_master_key(master_key, keys);
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
     unsigned char result[32] = {0};
 
-    magma_decrypt_ctr(keys, iv, cipher_text, result, 32);
+    MagmaResult decrypt_result = magma_decrypt_ctr(keys, iv, cipher_text, result, 32);
+    cr_assert(decrypt_result == MAGMA_SUCCESS);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);

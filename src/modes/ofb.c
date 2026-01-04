@@ -1,6 +1,6 @@
 #include "modes/ofb.h"
 
-void magma_encrypt_ofb(
+MagmaResult magma_encrypt_ofb(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char *iv, 
     const size_t iv_length,
@@ -9,6 +9,10 @@ void magma_encrypt_ofb(
     const size_t length
 )
 {
+    if (keys == NULL || iv == NULL || input == NULL || output == NULL) {
+        return MAGMA_ERROR_NULL_POINTER;
+    }
+
     size_t shift_register = 0;
     unsigned char reg[iv_length];
     memcpy(reg, iv, iv_length);
@@ -16,9 +20,13 @@ void magma_encrypt_ofb(
     for (size_t i = 0; i < (length / MAGMA_BLOCK_SIZE); i++) {
         unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
 
-        magma_encrypt_block(reg + shift_register, cipher_block, keys);
+        MagmaResult encrypt_block_result = magma_encrypt_block(reg + shift_register, cipher_block, keys);
 
-        for (int j = 0; j < 8; j++) {
+        if (encrypt_block_result != MAGMA_SUCCESS) {
+            return encrypt_block_result;
+        }
+
+        for (int j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             output[i * MAGMA_BLOCK_SIZE + j] = input[i * MAGMA_BLOCK_SIZE + j] ^ cipher_block[j];
         }
 
@@ -30,9 +38,11 @@ void magma_encrypt_ofb(
             shift_register = 0;
         }
     }
+
+    return MAGMA_SUCCESS;
 }
 
-void magma_decrypt_ofb(
+MagmaResult magma_decrypt_ofb(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char *iv, 
     const size_t iv_length,

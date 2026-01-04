@@ -1,6 +1,6 @@
 #include "modes/imit.h"
 
-void magma_encrypt_imit(
+MagmaResult magma_encrypt_imit(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const size_t mac_size,
     const unsigned char *input,
@@ -8,13 +8,21 @@ void magma_encrypt_imit(
     const size_t length
 )
 {
+    if (keys == NULL || input == NULL || mac == NULL) {
+        return MAGMA_ERROR_NULL_POINTER;
+    }
+
     unsigned char previous_cipher_block[MAGMA_BLOCK_SIZE] = {0};
     unsigned char result[MAGMA_BLOCK_SIZE] = {0};
     unsigned char first_plain_block[MAGMA_BLOCK_SIZE] = {0};
 
     memcpy(first_plain_block, input, MAGMA_BLOCK_SIZE);
 
-    magma_encrypt_block(first_plain_block, previous_cipher_block, keys);
+    MagmaResult encrypt_first_block_result = magma_encrypt_block(first_plain_block, previous_cipher_block, keys);
+
+    if (encrypt_first_block_result != MAGMA_SUCCESS) {
+        return encrypt_first_block_result;
+    }
 
     memcpy(result, previous_cipher_block, MAGMA_BLOCK_SIZE);
 
@@ -29,7 +37,11 @@ void magma_encrypt_imit(
             plain_block[j] ^= previous_cipher_block[j];
         }
 
-        magma_encrypt_block(plain_block, cipher_block, keys);
+        MagmaResult encrypt_block_result = magma_encrypt_block(plain_block, cipher_block, keys);
+
+        if (encrypt_block_result != MAGMA_SUCCESS) {
+            return encrypt_block_result;
+        }
 
         for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             previous_cipher_block[j] = cipher_block[j];
@@ -57,7 +69,11 @@ void magma_encrypt_imit(
             plain_block[j] ^= lastKey[j];
         }
 
-        magma_encrypt_block(plain_block, cipher_block, keys);
+        MagmaResult encrypt_last_block_result = magma_encrypt_block(plain_block, cipher_block, keys);
+
+        if (encrypt_last_block_result != MAGMA_SUCCESS) {
+            return encrypt_last_block_result;
+        }
 
         for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             result[j] = cipher_block[j];
@@ -65,6 +81,8 @@ void magma_encrypt_imit(
     }
 
     memcpy(mac, result, mac_size);
+
+    return MAGMA_SUCCESS;
 }
 
 void calc_additional_keys(unsigned char K1_output[MAGMA_BLOCK_SIZE], unsigned char K2_output[MAGMA_BLOCK_SIZE], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])

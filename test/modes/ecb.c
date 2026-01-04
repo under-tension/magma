@@ -16,9 +16,11 @@ Test(test_ecb, magma_encrypt_ecb) {
     unsigned char result[32] = {0};
 
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
-    get_keys_from_master_key(master_key, keys);
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
-    magma_encrypt_ecb(keys, plain_text, result, 32);
+    MagmaResult encrypt_result = magma_encrypt_ecb(keys, plain_text, result, 32);
+    cr_assert(encrypt_result == MAGMA_SUCCESS);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);
@@ -39,9 +41,11 @@ Test(test_ecb, magma_decrypt_ecb) {
     unsigned char result[32] = {0};
 
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
-    get_keys_from_master_key(master_key, keys);
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
-    magma_decrypt_ecb(keys, plain_text, result, 32);
+    MagmaResult decrypt_result = magma_decrypt_ecb(keys, plain_text, result, 32);
+    cr_assert(decrypt_result == MAGMA_SUCCESS);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);

@@ -10,7 +10,8 @@ Test(test_modes, calc_additional_keys) {
     hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
 
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-    get_keys_from_master_key(master_key, keys);
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
     unsigned char K1[8] = {0};
     unsigned char K2[8] = {0};
@@ -39,11 +40,13 @@ Test(test_modes, magma_encrypt_imit) {
     hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
 
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
-    get_keys_from_master_key(master_key, keys);
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
     unsigned char mac[4] = {0};
 
-    magma_encrypt_imit(keys, 4, plain_text, mac, 32);
+    MagmaResult encrypt_result = magma_encrypt_imit(keys, 4, plain_text, mac, 32);
+    cr_assert(encrypt_result == MAGMA_SUCCESS);
 
     char result_str[8] = {0};
     bytes_to_hex(mac, result_str, 4);

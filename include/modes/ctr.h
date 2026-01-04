@@ -9,7 +9,7 @@
 
 #define CTR_IV_LENGTH 4
 
-void magma_encrypt_ctr(
+MagmaResult magma_encrypt_ctr(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char iv[CTR_IV_LENGTH], 
     const unsigned char *input,
@@ -17,11 +17,12 @@ void magma_encrypt_ctr(
     const size_t length
 );
 
-void magma_decrypt_ctr(
+MagmaResult magma_decrypt_ctr(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char iv[CTR_IV_LENGTH], 
     const unsigned char *input,
     unsigned char *output,
-    const size_t length);
+    const size_t length
+);
 
 #endif

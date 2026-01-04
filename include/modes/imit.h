@@ -7,14 +7,14 @@
 #include "../core/crypt.h"
 #include "../core/utils.h"
 
-void magma_encrypt_imit(
+MagmaResult magma_encrypt_imit(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const size_t mac_size,
     const unsigned char *input,
     unsigned char *mac,
     const size_t length
-)
-;
+);
+
 void calc_additional_keys(unsigned char K1_output[8], unsigned char K2_output[8], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN]);
 
 #endif

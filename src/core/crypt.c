@@ -36,8 +36,12 @@ uint32_t feistel(const uint32_t plaintext, const uint32_t key)
     return result;
 }
 
-void magma_encrypt_block(const unsigned char plain_text[MAGMA_BLOCK_SIZE], unsigned char cipher_text[MAGMA_BLOCK_SIZE], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
+MagmaResult magma_encrypt_block(const unsigned char plain_text[MAGMA_BLOCK_SIZE], unsigned char cipher_text[MAGMA_BLOCK_SIZE], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
 {
+  if (plain_text == NULL || cipher_text == NULL || keys == NULL) {
+      return MAGMA_ERROR_NULL_POINTER;
+  }
+
   uint32_t left = bytes_to_uint32_be(plain_text);
   uint32_t right = bytes_to_uint32_be(plain_text + 4);
 
@@ -55,10 +59,16 @@ void magma_encrypt_block(const unsigned char plain_text[MAGMA_BLOCK_SIZE], unsig
 
   uint32_to_bytes_be(left, cipher_text);
   uint32_to_bytes_be(right, cipher_text+4);
+
+  return MAGMA_SUCCESS;
 }
 
-void magma_decrypt_block(const unsigned char plain_text[8], unsigned char cipher_text[8], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
+MagmaResult magma_decrypt_block(const unsigned char plain_text[MAGMA_BLOCK_SIZE], unsigned char cipher_text[MAGMA_BLOCK_SIZE], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
 {
+  if (plain_text == NULL || cipher_text == NULL || keys == NULL) {
+      return MAGMA_ERROR_NULL_POINTER;
+  }
+
   uint32_t left = bytes_to_uint32_be(plain_text);
   uint32_t right = bytes_to_uint32_be(plain_text + 4);
 
@@ -76,4 +86,6 @@ void magma_decrypt_block(const unsigned char plain_text[8], unsigned char cipher
 
   uint32_to_bytes_be(left, cipher_text);
   uint32_to_bytes_be(right, cipher_text+4);
+
+  return MAGMA_SUCCESS;
 }

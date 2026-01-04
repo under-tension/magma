@@ -7,13 +7,14 @@
 #include "../core/crypt.h"
 #include "../core/utils.h"
 
-void magma_encrypt_ecb(
+MagmaResult magma_encrypt_ecb(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char *input,
     unsigned char *output,
     const size_t length
 );
-void magma_decrypt_ecb(
+
+MagmaResult magma_decrypt_ecb(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char *input,
     unsigned char *output,

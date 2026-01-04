@@ -51,7 +51,8 @@ Test(crypt, encode) {
     hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
 
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-    get_keys_from_master_key(master_key, keys);
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
     unsigned char result[8] = {0};
 
@@ -73,7 +74,8 @@ Test(crypt, decode) {
     hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
 
     unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-    get_keys_from_master_key(master_key, keys);
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
 
     unsigned char result[8] = {0};
 

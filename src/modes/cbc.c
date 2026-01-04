@@ -1,6 +1,6 @@
 #include "modes/cbc.h"
 
-void magma_encrypt_cbc(
+MagmaResult magma_encrypt_cbc(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char *iv, 
     const size_t iv_length,
@@ -9,6 +9,10 @@ void magma_encrypt_cbc(
     const size_t length
 )
 {
+    if (keys == NULL || iv == NULL || input == NULL || output == NULL) {
+        return MAGMA_ERROR_NULL_POINTER;
+    }
+
     size_t shift_register = 0;
     unsigned char reg[iv_length];
     memcpy(reg, iv, iv_length);
@@ -21,7 +25,11 @@ void magma_encrypt_cbc(
             prepared_block[j] = input[(i * MAGMA_BLOCK_SIZE) + j] ^ reg[shift_register + j];
         }
 
-        magma_encrypt_block(prepared_block, cipher_block, keys);
+        MagmaResult encrypt_block_result = magma_encrypt_block(prepared_block, cipher_block, keys);
+
+        if (encrypt_block_result != MAGMA_SUCCESS) {
+            return encrypt_block_result;
+        }
 
         memcpy(output + (i * MAGMA_BLOCK_SIZE), cipher_block, MAGMA_BLOCK_SIZE);
 
@@ -33,9 +41,11 @@ void magma_encrypt_cbc(
             shift_register = 0;
         }
     }
+
+    return MAGMA_SUCCESS;
 }
 
-void magma_decrypt_cbc(
+MagmaResult magma_decrypt_cbc(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char *iv, 
     const size_t iv_length,
@@ -44,6 +54,10 @@ void magma_decrypt_cbc(
     const size_t length
 )
 {
+    if (keys == NULL || iv == NULL || input == NULL || output == NULL) {
+        return MAGMA_ERROR_NULL_POINTER;
+    }
+
     size_t shift_register = 0;
     unsigned char reg[iv_length];
     memcpy(reg, iv, iv_length);
@@ -52,7 +66,11 @@ void magma_decrypt_cbc(
         unsigned char plain_block[MAGMA_BLOCK_SIZE] = {0};
         unsigned char decode_block[MAGMA_BLOCK_SIZE] = {0};
 
-        magma_decrypt_block(input + (i * MAGMA_BLOCK_SIZE), decode_block, keys);
+        MagmaResult decrypt_block_result = magma_decrypt_block(input + (i * MAGMA_BLOCK_SIZE), decode_block, keys);
+
+        if (decrypt_block_result != MAGMA_SUCCESS) {
+            return decrypt_block_result;
+        }
 
         for (size_t j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             plain_block[j] = decode_block[j] ^ reg[shift_register + j];
@@ -68,4 +86,6 @@ void magma_decrypt_cbc(
             shift_register = 0;
         }
     }
+
+    return MAGMA_SUCCESS;
 }

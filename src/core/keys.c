@@ -1,7 +1,11 @@
 #include "core/keys.h"
 
-void get_keys_from_master_key(const unsigned char master_key[MASTER_KEY_LEN], unsigned char result_keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
+MagmaResult key_expand(const unsigned char master_key[MASTER_KEY_LEN], unsigned char result_keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
 {
+    if (master_key == NULL || result_keys == NULL) {
+        return MAGMA_ERROR_NULL_POINTER;
+    }
+
     memcpy(result_keys[0], master_key, 4);
     memcpy(result_keys[1], master_key + 4, 4);
     memcpy(result_keys[2], master_key + 8, 4);
@@ -38,4 +42,6 @@ void get_keys_from_master_key(const unsigned char master_key[MASTER_KEY_LEN], un
     memcpy(result_keys[29], master_key + 8, 4);
     memcpy(result_keys[30], master_key + 4, 4);
     memcpy(result_keys[31], master_key, 4);
+
+    return MAGMA_SUCCESS;
 }
