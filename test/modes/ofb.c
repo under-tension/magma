@@ -15,15 +15,12 @@ Test(test_ofb, magma_encrypt_ofb) {
     unsigned char iv[16];
     hex_to_bytes("1234567890abcdef234567890abcdef1", iv, 32);
 
-    OfbCtx *ctx = calloc(1, sizeof(OfbCtx));
-    ctx->iv = iv;
-    ctx->iv_length = 16;
-
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
     unsigned char result[32] = {0};
 
-    magma_encrypt_ofb(ctx, plain_text, result, 32);
+    magma_encrypt_ofb(keys, iv, 16, plain_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);
@@ -43,15 +40,12 @@ Test(test_ofb, magma_decrypt_ofb) {
     unsigned char iv[16];
     hex_to_bytes("1234567890abcdef234567890abcdef1", iv, 32);
 
-    OfbCtx *ctx = calloc(1, sizeof(OfbCtx));
-    ctx->iv = iv;
-    ctx->iv_length = 16;
-
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
     unsigned char result[32] = {0};
 
-    magma_decrypt_ofb(ctx, cipher_text, result, 32);
+    magma_decrypt_ofb(keys, iv, 16, cipher_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);

@@ -15,15 +15,12 @@ Test(test_cbc, cbc_encrypt) {
     unsigned char iv[24];
     hex_to_bytes("1234567890abcdef234567890abcdef134567890abcdef12", iv, 48);
 
-    CbcCtx *ctx = calloc(1, sizeof(CbcCtx));
-    ctx->iv = iv;
-    ctx->iv_length = 24;
-
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
     unsigned char result[32] = {0};
 
-    magma_encrypt_cbc(ctx, plain_text, result, 32);
+    magma_encrypt_cbc(keys, iv, 24, plain_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);
@@ -43,15 +40,12 @@ Test(test_cbc, cbc_decrypt) {
     unsigned char iv[24];
     hex_to_bytes("1234567890abcdef234567890abcdef134567890abcdef12", iv, 48);
 
-    CbcCtx *ctx = calloc(1, sizeof(CbcCtx));
-    ctx->iv = iv;
-    ctx->iv_length = 24;
-
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
     unsigned char result[32] = {0};
 
-    magma_decrypt_cbc(ctx, cipher_text, result, 32);
+    magma_decrypt_cbc(keys, iv, 24, cipher_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);

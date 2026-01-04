@@ -7,13 +7,21 @@
 #include "../core/crypt.h"
 #include "../core/utils.h"
 
-typedef struct {
-    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-    unsigned char *iv;
-    size_t iv_length;
-} OfbCtx;
+void magma_encrypt_ofb(
+    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
+    const unsigned char *iv, 
+    const size_t iv_length,
+    const unsigned char *input,
+    unsigned char *output,
+    const size_t length
+);
 
-void magma_encrypt_ofb(OfbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
-void magma_decrypt_ofb(OfbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
+void magma_decrypt_ofb(    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
+    const unsigned char *iv, 
+    const size_t iv_length,
+    const unsigned char *input,
+    unsigned char *output,
+    const size_t length
+);
 
 #endif

@@ -13,18 +13,15 @@ Test(test_ctr, magma_encrypt_ctr) {
     unsigned char master_key[32];
     hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
 
-    CtrCtx *ctx = calloc(1, sizeof(CtrCtx));
-
     unsigned char iv[4];
     hex_to_bytes("12345678", iv, 8);
 
-    ctx->iv = bytes_to_uint32(iv);
-
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
     unsigned char result[32] = {0};
 
-    magma_encrypt_ctr(ctx, plain_text, result, 32);
+    magma_encrypt_ctr(keys, iv, plain_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);
@@ -42,18 +39,15 @@ Test(test_ctr, magma_decrypt_ctr) {
     unsigned char master_key[32];
     hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
 
-    CtrCtx *ctx = calloc(1, sizeof(CtrCtx));
-
     unsigned char iv[4];
     hex_to_bytes("12345678", iv, 8);
 
-    ctx->iv = bytes_to_uint32(iv);
-
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
     unsigned char result[32] = {0};
 
-    magma_decrypt_ctr(ctx, cipher_text, result, 32);
+    magma_decrypt_ctr(keys, iv, cipher_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);

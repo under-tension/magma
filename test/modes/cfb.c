@@ -15,15 +15,12 @@ Test(test_cfb, magma_encrypt_cfb) {
     unsigned char iv[16];
     hex_to_bytes("1234567890abcdef234567890abcdef1", iv, 32);
 
-    CfbCtx *ctx = calloc(1, sizeof(CfbCtx));
-    ctx->iv = iv;
-    ctx->iv_length = 16;
-
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
     unsigned char result[32] = {0};
 
-    magma_encrypt_cfb(ctx, plain_text, result, 32);
+    magma_encrypt_cfb(keys, iv, 16, plain_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);
@@ -43,15 +40,12 @@ Test(test_cfb, magma_decrypt_cfb) {
     unsigned char iv[16];
     hex_to_bytes("1234567890abcdef234567890abcdef1", iv, 32);
 
-    CfbCtx *ctx = calloc(1, sizeof(CfbCtx));
-    ctx->iv = iv;
-    ctx->iv_length = 16;
-
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
     unsigned char result[32] = {0};
 
-    magma_decrypt_cfb(ctx, cipher_text, result, 32);
+    magma_decrypt_cfb(keys, iv, 16, cipher_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);

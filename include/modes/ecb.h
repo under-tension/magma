@@ -7,11 +7,17 @@
 #include "../core/crypt.h"
 #include "../core/utils.h"
 
-typedef struct {
-    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
-} EcbCtx;
-
-void magma_encrypt_ecb(EcbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
-void magma_decrypt_ecb(EcbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length);
+void magma_encrypt_ecb(
+    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
+    const unsigned char *input,
+    unsigned char *output,
+    const size_t length
+);
+void magma_decrypt_ecb(
+    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
+    const unsigned char *input,
+    unsigned char *output,
+    const size_t length
+);
 
 #endif

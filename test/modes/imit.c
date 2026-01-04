@@ -38,15 +38,15 @@ Test(test_modes, magma_encrypt_imit) {
     unsigned char master_key[32];
     hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
 
-    ImitCtx *ctx = calloc(1, sizeof(ImitCtx));
-    ctx->length = 32;
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
-    get_keys_from_master_key(master_key, ctx->keys);
+    unsigned char mac[4] = {0};
 
-    magma_encrypt_imit(plain_text, ctx);
+    magma_encrypt_imit(keys, 4, plain_text, mac, 32);
 
     char result_str[8] = {0};
-    bytes_to_hex(ctx->mac, result_str, 4);
+    bytes_to_hex(mac, result_str, 4);
 
     char expected_mac[8] = "154e7210";
     

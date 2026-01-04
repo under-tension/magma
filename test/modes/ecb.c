@@ -15,11 +15,10 @@ Test(test_ecb, magma_encrypt_ecb) {
 
     unsigned char result[32] = {0};
 
-    EcbCtx *ctx = calloc(1, sizeof(EcbCtx));
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
-    get_keys_from_master_key(master_key, ctx->keys);
-
-    magma_encrypt_ecb(ctx, plain_text, result, 32);
+    magma_encrypt_ecb(keys, plain_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);
@@ -39,11 +38,10 @@ Test(test_ecb, magma_decrypt_ecb) {
 
     unsigned char result[32] = {0};
 
-    EcbCtx *ctx = calloc(1, sizeof(EcbCtx));
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    get_keys_from_master_key(master_key, keys);
 
-    get_keys_from_master_key(master_key, ctx->keys);
-
-    magma_decrypt_ecb(ctx, plain_text, result, 32);
+    magma_decrypt_ecb(keys, plain_text, result, 32);
 
     char result_str[64];
     bytes_to_hex(result, result_str, 32);

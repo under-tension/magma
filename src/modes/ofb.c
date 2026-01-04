@@ -1,31 +1,44 @@
 #include "modes/ofb.h"
 
-void magma_encrypt_ofb(OfbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length)
+void magma_encrypt_ofb(
+    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
+    const unsigned char *iv, 
+    const size_t iv_length,
+    const unsigned char *input,
+    unsigned char *output,
+    const size_t length
+)
 {
     size_t shift_register = 0;
-    unsigned char reg[ctx->iv_length];
-    memcpy(reg, ctx->iv, ctx->iv_length);
+    unsigned char reg[iv_length];
+    memcpy(reg, iv, iv_length);
 
-    for (size_t i = 0; i < (length / 8); i++) {
-        unsigned char cipher_block[8] = {0};
+    for (size_t i = 0; i < (length / MAGMA_BLOCK_SIZE); i++) {
+        unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
 
-        magma_encrypt_block(reg + shift_register, cipher_block, ctx->keys);
+        magma_encrypt_block(reg + shift_register, cipher_block, keys);
 
         for (int j = 0; j < 8; j++) {
-            output[i * 8 + j] = input[i * 8 + j] ^ cipher_block[j];
+            output[i * MAGMA_BLOCK_SIZE + j] = input[i * MAGMA_BLOCK_SIZE + j] ^ cipher_block[j];
         }
 
-        memcpy(reg + shift_register, cipher_block, 8);
+        memcpy(reg + shift_register, cipher_block, MAGMA_BLOCK_SIZE);
 
-        shift_register += 8;
+        shift_register += MAGMA_BLOCK_SIZE;
 
-        if (shift_register >= ctx->iv_length) {
+        if (shift_register >= iv_length) {
             shift_register = 0;
         }
     }
 }
 
-void magma_decrypt_ofb(OfbCtx *ctx, const unsigned char *input, unsigned char *output, size_t length)
+void magma_decrypt_ofb(
+    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
+    const unsigned char *iv, 
+    const size_t iv_length,
+    const unsigned char *input,
+    unsigned char *output,
+    const size_t length)
 {
-    return magma_encrypt_ofb(ctx, input, output, length);
+    return magma_encrypt_ofb(keys, iv, iv_length, input, output, length);
 }
