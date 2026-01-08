@@ -12,76 +12,55 @@ MagmaResult magma_encrypt_imit(
         return MAGMA_ERROR_NULL_POINTER;
     }
 
+    if (mac_size == 0 || length == 0) {
+        return MAGMA_ERROR_INVALID_LENGTH;
+    }
+
     unsigned char previous_cipher_block[MAGMA_BLOCK_SIZE] = {0};
     unsigned char result[MAGMA_BLOCK_SIZE] = {0};
-    unsigned char first_plain_block[MAGMA_BLOCK_SIZE] = {0};
-
-    memcpy(first_plain_block, input, MAGMA_BLOCK_SIZE);
-
-    MagmaResult encrypt_first_block_result = magma_encrypt_block(first_plain_block, previous_cipher_block, keys);
-
-    if (encrypt_first_block_result != MAGMA_SUCCESS) {
-        return encrypt_first_block_result;
-    }
-
-    memcpy(result, previous_cipher_block, MAGMA_BLOCK_SIZE);
-
-    unsigned i = 1;
-    for (;i < (length / MAGMA_BLOCK_SIZE) - 1; i++) {
-        unsigned char plain_block[MAGMA_BLOCK_SIZE] = {0};
-        unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
-
-        memcpy(plain_block, input + (i * MAGMA_BLOCK_SIZE), MAGMA_BLOCK_SIZE);
-
-        for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
-            plain_block[j] ^= previous_cipher_block[j];
-        }
-
-        MagmaResult encrypt_block_result = magma_encrypt_block(plain_block, cipher_block, keys);
-
-        if (encrypt_block_result != MAGMA_SUCCESS) {
-            return encrypt_block_result;
-        }
-
-        for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
-            previous_cipher_block[j] = cipher_block[j];
-        }
-    }
 
     unsigned char K1[MAGMA_BLOCK_SIZE] = {0};
     unsigned char K2[MAGMA_BLOCK_SIZE] = {0};
-
     calc_additional_keys(K1, K2, keys);
 
-    const unsigned char *lastKey = length % 8 == 0 ? K1 : K2;
+    size_t full_blocks = length / MAGMA_BLOCK_SIZE;
+    size_t remainder   = length % MAGMA_BLOCK_SIZE;
+    size_t total_blocks = full_blocks + (remainder ? 1 : 0);
 
-    if (i <= length / MAGMA_BLOCK_SIZE) {
+    for (size_t i = 0; i < total_blocks; i++) {
         unsigned char plain_block[MAGMA_BLOCK_SIZE] = {0};
         unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
 
-        memcpy(plain_block, input + (i * MAGMA_BLOCK_SIZE), MAGMA_BLOCK_SIZE);
-
-        for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
-            plain_block[j] ^= previous_cipher_block[j];
+        if (i < full_blocks) {
+            memcpy(plain_block, input + i * MAGMA_BLOCK_SIZE, MAGMA_BLOCK_SIZE);
+        } else if (remainder > 0) {
+            memcpy(plain_block, input + i * MAGMA_BLOCK_SIZE, remainder);
+            plain_block[remainder] = 0x80;
         }
 
-        for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
-            plain_block[j] ^= lastKey[j];
+        if (i > 0) {
+            for (size_t j = 0; j < MAGMA_BLOCK_SIZE; j++) {
+                plain_block[j] ^= previous_cipher_block[j];
+            }
         }
 
-        MagmaResult encrypt_last_block_result = magma_encrypt_block(plain_block, cipher_block, keys);
-
-        if (encrypt_last_block_result != MAGMA_SUCCESS) {
-            return encrypt_last_block_result;
+        if (i == total_blocks - 1) {
+            const unsigned char *lastKey = (remainder == 0) ? K1 : K2;
+            for (size_t j = 0; j < MAGMA_BLOCK_SIZE; j++) {
+                plain_block[j] ^= lastKey[j];
+            }
         }
 
-        for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
-            result[j] = cipher_block[j];
+        MagmaResult encrypt_result = magma_encrypt_block(plain_block, cipher_block, keys);
+        if (encrypt_result != MAGMA_SUCCESS) {
+            return encrypt_result;
         }
+
+        memcpy(previous_cipher_block, cipher_block, MAGMA_BLOCK_SIZE);
+        memcpy(result, cipher_block, MAGMA_BLOCK_SIZE);
     }
 
-    memcpy(mac, result, mac_size);
-
+    memcpy(mac, result, mac_size < MAGMA_BLOCK_SIZE ? mac_size : MAGMA_BLOCK_SIZE);
     return MAGMA_SUCCESS;
 }
 

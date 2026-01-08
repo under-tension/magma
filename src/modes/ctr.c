@@ -15,6 +15,8 @@ MagmaResult magma_encrypt_ctr(
     uint32_t counter = 0;
     unsigned char counter_bytes[MAGMA_BLOCK_SIZE] = {0};
     memcpy(counter_bytes, iv, CTR_IV_LENGTH);
+    
+    size_t offset = 0;
 
     for (unsigned i = 0; i < (length / MAGMA_BLOCK_SIZE); i++) {
         unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
@@ -28,10 +30,27 @@ MagmaResult magma_encrypt_ctr(
         }
 
         for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
-            output[(i * MAGMA_BLOCK_SIZE) + j] = input[(i * MAGMA_BLOCK_SIZE) + j] ^ cipher_block[j];
+            output[offset + j] = input[offset + j] ^ cipher_block[j];
         }
 
+        offset += MAGMA_BLOCK_SIZE;
         counter++;
+    }
+
+    if (length % MAGMA_BLOCK_SIZE > 0) {
+        unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
+
+        uint32_to_bytes_be(counter, counter_bytes + 4);
+
+        MagmaResult encrypt_block_result = magma_encrypt_block(counter_bytes, cipher_block, keys);
+
+        if (encrypt_block_result != MAGMA_SUCCESS) {
+            return encrypt_block_result;
+        }
+
+        for (size_t j = 0; j < length % MAGMA_BLOCK_SIZE; j++) {
+            output[offset + j] = input[offset + j] ^ cipher_block[j];
+        }
     }
 
     return MAGMA_SUCCESS;

@@ -17,6 +17,8 @@ MagmaResult magma_encrypt_ofb(
     unsigned char reg[iv_length];
     memcpy(reg, iv, iv_length);
 
+    size_t offset = 0;
+
     for (size_t i = 0; i < (length / MAGMA_BLOCK_SIZE); i++) {
         unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
 
@@ -27,7 +29,7 @@ MagmaResult magma_encrypt_ofb(
         }
 
         for (int j = 0; j < MAGMA_BLOCK_SIZE; j++) {
-            output[i * MAGMA_BLOCK_SIZE + j] = input[i * MAGMA_BLOCK_SIZE + j] ^ cipher_block[j];
+            output[offset + j] = input[offset + j] ^ cipher_block[j];
         }
 
         memcpy(reg + shift_register, cipher_block, MAGMA_BLOCK_SIZE);
@@ -36,6 +38,22 @@ MagmaResult magma_encrypt_ofb(
 
         if (shift_register >= iv_length) {
             shift_register = 0;
+        }
+
+        offset += MAGMA_BLOCK_SIZE;
+    }
+
+    if (length % MAGMA_BLOCK_SIZE > 0) {
+        unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
+
+        MagmaResult encrypt_block_result = magma_encrypt_block(reg + shift_register, cipher_block, keys);
+
+        if (encrypt_block_result != MAGMA_SUCCESS) {
+            return encrypt_block_result;
+        }
+
+        for (size_t j = 0; j < length % MAGMA_BLOCK_SIZE; j++) {
+            output[offset + j] = input[offset + j] ^ cipher_block[j];
         }
     }
 
