@@ -1,5 +1,5 @@
-#ifndef MAGMA_COMMON_TYPES_H
-#define MAGMA_COMMON_TYPES_H
+#ifndef TYPES_H
+#define TYPES_H
 
 typedef enum {
     MAGMA_SUCCESS               = 0,

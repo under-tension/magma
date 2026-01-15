@@ -7,6 +7,7 @@ void hex_to_bytes(const char *hex, unsigned char *bytes, size_t len)
     }
 }
 
+// GCOVR_EXCL_START
 void print_hex(unsigned char *bytes, size_t len)
 {
     for (size_t i = 0; i < len; ++i) {
@@ -15,6 +16,7 @@ void print_hex(unsigned char *bytes, size_t len)
     }
     printf("\n");
 }
+// GCOVR_EXCL_STOP
 
 int bytes_to_hex(const unsigned char *input, char *output, size_t len)
 {

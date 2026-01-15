@@ -3,7 +3,7 @@
 
 #include "keys.h"
 #include "utils.h"
-#include "magma_common_types.h"
+#include "types.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>

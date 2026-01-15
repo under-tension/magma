@@ -1,7 +1,7 @@
 #ifndef MAGMA_KEYS_H
 #define MAGMA_KEYS_H
 
-#include "magma_common_types.h"
+#include "types.h"
 #include <stdlib.h>
 #include <string.h>
 

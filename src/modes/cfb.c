@@ -24,9 +24,11 @@ MagmaResult magma_encrypt_cfb(
 
         MagmaResult encrypt_block_result = magma_encrypt_block(reg + shift_register, cipher_block, keys);
 
+        // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
             return encrypt_block_result;
         }
+        // GCOVR_EXCL_STOP
 
         for (int j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             output[offset + j] = input[offset + j] ^ cipher_block[j];
@@ -48,9 +50,11 @@ MagmaResult magma_encrypt_cfb(
 
         MagmaResult encrypt_block_result = magma_encrypt_block(reg + shift_register, cipher_block, keys);
 
+        // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
             return encrypt_block_result;
         }
+        // GCOVR_EXCL_STOP
 
         for (size_t j = 0; j < length % MAGMA_BLOCK_SIZE; j++) {
             output[offset + j] = input[offset + j] ^ cipher_block[j];
@@ -84,9 +88,11 @@ MagmaResult magma_decrypt_cfb(
 
         MagmaResult encrypt_block_result = magma_encrypt_block(reg + shift_register, decode_block, keys);
 
+        // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
             return encrypt_block_result;
         }
+        // GCOVR_EXCL_STOP
 
         for (size_t j = 0; j < 8; j++) {
             output[offset + j] = input[offset + j] ^ decode_block[j];
@@ -108,9 +114,11 @@ MagmaResult magma_decrypt_cfb(
 
         MagmaResult encrypt_block_result = magma_encrypt_block(reg + shift_register, cipher_block, keys);
 
+        // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
             return encrypt_block_result;
         }
+        // GCOVR_EXCL_STOP
 
         for (size_t j = 0; j < length % MAGMA_BLOCK_SIZE; j++) {
             output[offset + j] = input[offset + j] ^ cipher_block[j];

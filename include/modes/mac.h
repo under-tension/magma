@@ -1,5 +1,5 @@
-#ifndef MAGMA_IMIT_H
-#define MAGMA_IMIT_H
+#ifndef MAGMA_MAC_H
+#define MAGMA_MAC_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -7,7 +7,7 @@
 #include "../core/crypt.h"
 #include "../core/utils.h"
 
-MagmaResult magma_encrypt_imit(
+MagmaResult magma_mac(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const size_t mac_size,
     const unsigned char *input,

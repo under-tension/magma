@@ -1,25 +1,12 @@
-# test-build:
-# 	gcc -o ./test.out \
-# 	./test/keys.c \
-# 	./test/core.c \
-# 	./test/utils.c \
-# 	./test/modes.c \
-# 	./src/utils.c \
-# 	./src/keys.c \
-# 	./src/core.c \
-# 	./src/modes.c \
-# 	-L ./lib/criterion/build/src -lcriterion
-
-
 CC          ?= gcc
 CFLAGS      ?= -Wall -Wextra -std=c11 -g -O0
+CTESTFLAGS  ?= -fPIC -fprofile-arcs -ftest-coverage -fno-inline
 INCLUDES    := -I./include
 
 # Libs for test
-CRITERION_DIR ?= ./lib/criterion
+CRITERION_DIR ?= ./third_party/criterion
 CRITERION_LIB  = $(CRITERION_DIR)/build/src
 CRITERION_INC  = $(CRITERION_DIR)/include
-
 
 LIB_SRC := \
 	./src/core/crypt.c \
@@ -30,19 +17,18 @@ LIB_SRC := \
 	./src/modes/cbc.c \
 	./src/modes/cfb.c \
 	./src/modes/ecb.c \
-	./src/modes/imit.c
-
+	./src/modes/mac.c
 
 TEST_SRC := \
-	./test/core/crypt.c \
-	./test/core/keys.c \
-	./test/core/utils.c \
-	./test/modes/ctr.c \
-	./test/modes/ofb.c \
-	./test/modes/cbc.c \
-	./test/modes/cfb.c \
-	./test/modes/ecb.c \
-	./test/modes/imit.c
+	./test/core/test_crypt.c \
+	./test/core/test_keys.c \
+	./test/core/test_utils.c \
+	./test/modes/test_ctr.c \
+	./test/modes/test_ofb.c \
+	./test/modes/test_cbc.c \
+	./test/modes/test_cfb.c \
+	./test/modes/test_ecb.c \
+	./test/modes/test_mac.c
 
 TEST_BIN := ./test.out
 
@@ -51,10 +37,16 @@ TEST_BIN := ./test.out
 test-build: $(TEST_BIN)
 
 $(TEST_BIN): $(LIB_SRC) $(TEST_SRC) | check-criterion
-	$(CC) $(CFLAGS) $(INCLUDES) -I$(CRITERION_INC) \
+	gcc $(CFLAGS) $(CTESTFLAGS) $(INCLUDES) -I$(CRITERION_INC) \
 		$(TEST_SRC) $(LIB_SRC) \
 		-L$(CRITERION_LIB) -lcriterion -lpthread -lm \
 		-o $@
+
+clean-coverage:
+	find . -name "*.gcda" -delete
+
+printcov:
+	gcovr --root . --exclude 'test|third_party'
 
 # Check isset Criterion
 check-criterion:

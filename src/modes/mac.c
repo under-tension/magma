@@ -1,6 +1,6 @@
-#include "modes/imit.h"
+#include "modes/mac.h"
 
-MagmaResult magma_encrypt_imit(
+MagmaResult magma_mac(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const size_t mac_size,
     const unsigned char *input,
@@ -52,9 +52,12 @@ MagmaResult magma_encrypt_imit(
         }
 
         MagmaResult encrypt_result = magma_encrypt_block(plain_block, cipher_block, keys);
+
+        // GCOVR_EXCL_START
         if (encrypt_result != MAGMA_SUCCESS) {
             return encrypt_result;
         }
+        // GCOVR_EXCL_STOP
 
         memcpy(previous_cipher_block, cipher_block, MAGMA_BLOCK_SIZE);
         memcpy(result, cipher_block, MAGMA_BLOCK_SIZE);

@@ -26,9 +26,11 @@ MagmaResult magma_encrypt_ecb(
 
         MagmaResult encrypt_block_result = magma_encrypt_block(plain_block, cipher_block, keys);
 
+        // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
             return encrypt_block_result;
         }
+        // GCOVR_EXCL_STOP
 
         for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             output[(i * MAGMA_BLOCK_SIZE) + j] = cipher_block[j];
@@ -49,6 +51,10 @@ MagmaResult magma_decrypt_ecb(
         return MAGMA_ERROR_NULL_POINTER;
     }
 
+    if (length == 0 || length % MAGMA_BLOCK_SIZE != 0) {
+        return MAGMA_ERROR_INVALID_LENGTH;
+    }
+
     for (unsigned i = 0; i < (length / MAGMA_BLOCK_SIZE); i++) {
         unsigned char plain_block[MAGMA_BLOCK_SIZE] = {0};
         unsigned char cipher_block[MAGMA_BLOCK_SIZE] = {0};
@@ -57,9 +63,11 @@ MagmaResult magma_decrypt_ecb(
 
         MagmaResult decrypt_block_result = magma_decrypt_block(plain_block, cipher_block, keys);
 
+        // GCOVR_EXCL_START
         if (decrypt_block_result != MAGMA_SUCCESS) {
             return decrypt_block_result;
         }
+        // GCOVR_EXCL_STOP
 
         for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             output[(i * MAGMA_BLOCK_SIZE) + j] = cipher_block[j];

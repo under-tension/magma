@@ -10,8 +10,7 @@ Test(crypt, trans) {
     unsigned char input[TRANSPOSITION_BLOCK_SIZE];
     hex_to_bytes("fdb97531", input, TRANSPOSITION_BLOCK_SIZE*2);
 
-    unsigned char result[TRANSPOSITION_BLOCK_SIZE];
-    memset(result, 0, TRANSPOSITION_BLOCK_SIZE);
+    unsigned char result[TRANSPOSITION_BLOCK_SIZE] = {0};
 
     uint32_t iter_trans = T(bytes_to_uint32_be(input));
     uint32_to_bytes_be(iter_trans, result);
@@ -31,8 +30,7 @@ Test(crypt, feistel) {
     unsigned char input[4];
     hex_to_bytes("fedcba98", input, 8);
 
-    unsigned char result[4];
-    memset(result, 0, 4);
+    unsigned char result[4] = {0};
 
     uint32_t iter_f = feistel(bytes_to_uint32_be(input), bytes_to_uint32_be(iter_key));
     uint32_to_bytes_be(iter_f, result);
@@ -43,7 +41,7 @@ Test(crypt, feistel) {
     cr_assert(memcmp(result_str, expected_result, 8) == 0);
 }
 
-Test(crypt, encode) {
+Test(crypt, encode_success) {
     unsigned char plain_text[8];
     hex_to_bytes("fedcba9876543210", plain_text, 16);
 
@@ -66,7 +64,7 @@ Test(crypt, encode) {
     cr_assert(memcmp(result_str, expected_result, 16) == 0);
 }
 
-Test(crypt, decode) {
+Test(crypt, decode_success) {
     unsigned char plain_text[8];
     hex_to_bytes("4ee901e5c2d8ca3d", plain_text, 16);
 
@@ -87,4 +85,50 @@ Test(crypt, decode) {
     char expected_result[16] = "fedcba9876543210";
     
     cr_assert(memcmp(result_str, expected_result, 16) == 0);
+}
+
+Test(crypt, encode_error_null_pointer) {
+    unsigned char plain_text[8];
+    hex_to_bytes("fedcba9876543210", plain_text, 16);
+
+    unsigned char master_key[32];
+    hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
+
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
+
+    unsigned char result[8] = {0};
+
+    MagmaResult result_code = magma_encrypt_block(NULL, result, keys);
+    cr_assert(result_code == MAGMA_ERROR_NULL_POINTER);
+
+    result_code = magma_encrypt_block(plain_text, NULL, keys);
+    cr_assert(result_code == MAGMA_ERROR_NULL_POINTER);
+
+    result_code = magma_encrypt_block(plain_text, result, NULL);
+    cr_assert(result_code == MAGMA_ERROR_NULL_POINTER);
+}
+
+Test(crypt, decode_error_null_pointer) {
+    unsigned char plain_text[8];
+    hex_to_bytes("4ee901e5c2d8ca3d", plain_text, 16);
+
+    unsigned char master_key[32];
+    hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
+
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN];
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
+
+    unsigned char result[8] = {0};
+
+    MagmaResult result_code = magma_decrypt_block(NULL, result, keys);
+    cr_assert(result_code == MAGMA_ERROR_NULL_POINTER);
+
+    result_code = magma_decrypt_block(plain_text, NULL, keys);
+    cr_assert(result_code == MAGMA_ERROR_NULL_POINTER);
+
+    result_code = magma_decrypt_block(plain_text, result, NULL);
+    cr_assert(result_code == MAGMA_ERROR_NULL_POINTER);
 }
