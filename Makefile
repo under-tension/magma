@@ -26,7 +26,7 @@ TARGET_STATIC = $(LIB_DIR)/lib$(PROJ_NAME).a
 SRCS := $(shell find $(SRC_DIR) -name '*.c')
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
-.PHONY: test test_build clean
+.PHONY: test test_build clean docs clean-coverage printcov check-criterion
 
 all: $(TARGET) $(TARGET_STATIC)
 
@@ -72,6 +72,9 @@ check-criterion:
 		echo "👉 Please build Criterion first (e.g., run: cd $(CRITERION_DIR) && meson build && ninja -C build)"; \
 		exit 1; \
 	fi
+
+docs:
+	doxygen Doxyfile
 
 clean: clean-coverage
 	rm -f $(OBJS) $(TARGET) $(TARGET_STATIC)
