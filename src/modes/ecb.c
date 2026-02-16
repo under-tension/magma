@@ -1,8 +1,5 @@
 #include "modes/ecb.h"
 
-/**
-    \brief crypto mode Electronic Code Book, ECB
-*/
 MagmaResult magma_encrypt_ecb(
     const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
     const unsigned char *input,

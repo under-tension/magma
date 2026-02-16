@@ -1,3 +1,7 @@
 *.out
 *.gcno
 *.gcda
+/docs
+/build
+/lib
+/bin
