@@ -21,7 +21,12 @@ MagmaResult magma_mac(
 
     unsigned char K1[MAGMA_BLOCK_SIZE] = {0};
     unsigned char K2[MAGMA_BLOCK_SIZE] = {0};
-    calc_additional_keys(K1, K2, keys);
+
+    MagmaResult calc_additional_keys_result = calc_additional_keys(K1, K2, keys);
+
+    if (calc_additional_keys_result != MAGMA_SUCCESS) {
+        return calc_additional_keys_result;
+    }
 
     size_t full_blocks = length / MAGMA_BLOCK_SIZE;
     size_t remainder   = length % MAGMA_BLOCK_SIZE;
@@ -67,12 +72,20 @@ MagmaResult magma_mac(
     return MAGMA_SUCCESS;
 }
 
-void calc_additional_keys(unsigned char K1_output[MAGMA_BLOCK_SIZE], unsigned char K2_output[MAGMA_BLOCK_SIZE], const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN])
+MagmaResult calc_additional_keys(
+    unsigned char K1_output[MAGMA_BLOCK_SIZE],
+    unsigned char K2_output[MAGMA_BLOCK_SIZE],
+    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN]
+)
 {
     unsigned char zero[MAGMA_BLOCK_SIZE] = {0};
     unsigned char R[MAGMA_BLOCK_SIZE] = {0};
 
-    magma_encrypt_block(zero, R, keys);
+    MagmaResult encrypt_result = magma_encrypt_block(zero, R, keys);
+
+    if (encrypt_result != MAGMA_SUCCESS) {
+        return encrypt_result;
+    }
 
     int msb_r = (R[0] & 0x80) != 0;
 
@@ -97,4 +110,6 @@ void calc_additional_keys(unsigned char K1_output[MAGMA_BLOCK_SIZE], unsigned ch
 
     memcpy(K1_output, K1, MAGMA_BLOCK_SIZE);
     memcpy(K2_output, K2, MAGMA_BLOCK_SIZE);
+
+    return MAGMA_SUCCESS;
 }
