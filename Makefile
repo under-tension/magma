@@ -1,52 +1,69 @@
-CC          ?= gcc
-CFLAGS      ?= -Wall -Wextra -std=c11 -g -O0
-CTESTFLAGS  ?= -fPIC -fprofile-arcs -ftest-coverage -fno-inline
-INCLUDES    := -I./include
+PROJ_NAME = magma
 
-# Libs for test
-CRITERION_DIR ?= ./third_party/criterion
+CC          ?= gcc
+CFLAGS      ?= -Wall -Wextra -std=c11 -g
+CTESTFLAGS  ?= -Wall -Wextra -std=c11 -fPIC --coverage
+INCLUDES    := -I./include
+THIRD_PARTY_DIR := ./third_party
+LIB_DIR := ./lib
+BIN_DIR := ./bin
+BUILD_DIR := ./build
+SRC_DIR := ./src
+INCLUDE_DIRS := ./include
+LDFLAGS := -fPIC -shared -lc
+
+TEST_SRC_DIR := ./test
+TEST_SRC = $(shell find $(TEST_SRC_DIR) -name '*.c')
+TEST_BIN = ./bin/test.out
+
+CRITERION_DIR ?= $(THIRD_PARTY_DIR)/criterion
 CRITERION_LIB  = $(CRITERION_DIR)/build/src
 CRITERION_INC  = $(CRITERION_DIR)/include
 
-LIB_SRC := \
-	./src/core/crypt.c \
-	./src/core/keys.c \
-	./src/core/utils.c \
-	./src/modes/ctr.c \
-	./src/modes/ofb.c \
-	./src/modes/cbc.c \
-	./src/modes/cfb.c \
-	./src/modes/ecb.c \
-	./src/modes/mac.c
+TARGET = $(LIB_DIR)/lib$(PROJ_NAME).so
+TARGET_STATIC = $(LIB_DIR)/lib$(PROJ_NAME).a
 
-TEST_SRC := \
-	./test/core/test_crypt.c \
-	./test/core/test_keys.c \
-	./test/core/test_utils.c \
-	./test/modes/test_ctr.c \
-	./test/modes/test_ofb.c \
-	./test/modes/test_cbc.c \
-	./test/modes/test_cfb.c \
-	./test/modes/test_ecb.c \
-	./test/modes/test_mac.c
+SRCS := $(shell find $(SRC_DIR) -name '*.c')
+OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
-TEST_BIN := ./test.out
+.PHONY: test test_build clean
 
-.PHONY: test-build test clean
+all: $(TARGET) $(TARGET_STATIC)
 
-test-build: $(TEST_BIN)
+$(TARGET): $(OBJS) | $(LIB_DIR)
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
 
-$(TEST_BIN): $(LIB_SRC) $(TEST_SRC) | check-criterion
-	gcc $(CFLAGS) $(CTESTFLAGS) $(INCLUDES) -I$(CRITERION_INC) \
-		$(TEST_SRC) $(LIB_SRC) \
+$(TARGET_STATIC): $(OBJS) | $(LIB_DIR)
+	$(AR) rcs $@ $^
+
+$(LIB_DIR):
+	mkdir -p $(LIB_DIR)
+
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)/src/core $(BUILD_DIR)/src/modes
+
+$(BUILD_DIR)/%.o: ./src/%.c | $(BUILD_DIR)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+test_build = $(TEST_BIN)
+
+test: check-bin-dir test_build
+
+check-bin-dir:
+	mkdir -p $(BIN_DIR)
+
+test_build: $(SRCS) $(TEST_SRC) | check-criterion
+	gcc $(CTESTFLAGS) $(INCLUDES) -I$(CRITERION_INC) \
+		$(TEST_SRC) $(SRCS) \
 		-L$(CRITERION_LIB) -lcriterion -lpthread -lm \
-		-o $@
+		-o $(TEST_BIN)
 
 clean-coverage:
-	find . -name "*.gcda" -delete
+	find . -name "*.gcda" -delete -o -name "*.gcno" -delete
 
 printcov:
-	gcovr --root . --exclude 'test|third_party'
+	gcovr --root ./ --object-directory ./bin --exclude 'test|third_party'
 
 # Check isset Criterion
 check-criterion:
@@ -56,8 +73,6 @@ check-criterion:
 		exit 1; \
 	fi
 
-test: test-build
-	@./test.out
-
-clean:
+clean: clean-coverage
+	rm -f $(OBJS) $(TARGET) $(TARGET_STATIC)
 	rm -f $(TEST_BIN)
