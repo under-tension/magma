@@ -18,14 +18,14 @@ Cryptographic library for working with the block width MAGMA aka GOST 34.12-2015
 
 ## 🚀 Get started
 
-1. Cloning
+1) Cloning
 
 ```bash
 git clone https://github.com/under-tension/magma.git magma
 cd ./magma
 ```
 
-2. Building
+2) Building
 
 ```bash
 make
@@ -33,13 +33,13 @@ make
 
 ## 🧪 Testing
 
-1. Build tests
+1) Build tests
 
 ```bash
 make test
 ```
 
-2. Run unit test
+2) Run unit test
 
 ```bash
 ./bin/test
