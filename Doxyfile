@@ -1026,7 +1026,11 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = src/modes include
+INPUT                  = src/modes \
+                        include \
+                        README.md \
+                        docs/en/pages/using.md \
+                        docs/en/pages/contributing.md
 
 # This tag can be used to specify the character encoding of the source files
 # that Doxygen parses. Internally Doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1450,7 +1454,7 @@ HTML_FILE_EXTENSION    = .html
 # of the possible markers and block names see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_HEADER            = docs/layout/header.html
+HTML_HEADER            = docs/doxygen/layout/header.html
 
 # The HTML_FOOTER tag can be used to specify a user-defined HTML footer for each
 # generated HTML page. If the tag is left blank Doxygen will generate a standard
@@ -1490,9 +1494,9 @@ HTML_STYLESHEET        =
 # documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  = docs/assets/css/doxygen-awesome.css \
-                        docs/assets/css/doxygen-awesome-sidebar-only.css \
-                        docs/assets/css/doxygen-awesome-sidebar-only-darkmode-toggle.css
+HTML_EXTRA_STYLESHEET  = docs/doxygen/assets/css/doxygen-awesome.css \
+                        docs/doxygen/assets/css/doxygen-awesome-sidebar-only.css \
+                        docs/doxygen/assets/css/doxygen-awesome-sidebar-only-darkmode-toggle.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1502,8 +1506,8 @@ HTML_EXTRA_STYLESHEET  = docs/assets/css/doxygen-awesome.css \
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       = docs/assets/js/doxygen-awesome-darkmode-toggle.js \
-                        docs/assets/js/doxygen-awesome-paragraph-link.js
+HTML_EXTRA_FILES       = docs/doxygen/assets/js/doxygen-awesome-darkmode-toggle.js \
+                        docs/doxygen/assets/js/doxygen-awesome-paragraph-link.js
 
 # The HTML_COLORSTYLE tag can be used to specify if the generated HTML output
 # should be rendered with a dark or light theme.
