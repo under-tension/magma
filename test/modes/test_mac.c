@@ -32,7 +32,6 @@ Test(test_mac, calc_additional_keys) {
 }
 
 Test(test_mac, mac_success) {
-    
     unsigned char plain_text[32];
     hex_to_bytes("92def06b3c130a59db54c704f8189d204a98fb2e67a8024c8912409b17b57e41", plain_text, 64);
 

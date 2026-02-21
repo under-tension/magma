@@ -8,7 +8,7 @@ void hex_to_bytes(const char *hex, unsigned char *bytes, size_t len)
 }
 
 // GCOVR_EXCL_START
-void print_hex(unsigned char *bytes, size_t len)
+void print_hex(const unsigned char *bytes, size_t len)
 {
     for (size_t i = 0; i < len; ++i) {
         if (i > 0) printf(" ");
@@ -66,6 +66,6 @@ uint32_t bytes_to_uint32_be(const unsigned char *input)
 void uint32_to_bytes_be(const uint32_t input, unsigned char *output)
 {
   for(int i = 0; i < 4; i++) {
-      output[3-i] = (input >> (8*i)) & 0b11111111;
+      output[3-i] = (input >> (8*i)) & 0xFF;
   }
 }

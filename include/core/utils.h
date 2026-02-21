@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 void hex_to_bytes(const char *hex, unsigned char *bytes, size_t len);
-void print_hex(unsigned char *bytes, size_t len);
+void print_hex(const unsigned char *bytes, size_t len);
 int bytes_to_hex(const unsigned char *input, char *output, size_t len);
 uint32_t bytes_to_uint32(const unsigned char *input);
 void uint32_to_bytes(const uint32_t input, unsigned char *output);
