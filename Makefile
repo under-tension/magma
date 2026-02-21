@@ -12,11 +12,14 @@ SRC_DIR := ./src
 INCLUDE_DIRS := ./include
 LDFLAGS := -fPIC -shared -lc
 
+ROOT_DIR = $(shell pwd)
+
 TEST_SRC_DIR := ./test
 TEST_SRC = $(shell find $(TEST_SRC_DIR) -name '*.c')
 TEST_BIN = ./bin/test
 
-CRITERION_DIR ?= $(THIRD_PARTY_DIR)/criterion
+CRITERION_VERSION ?= v2.4.3
+CRITERION_DIR ?= $(THIRD_PARTY_DIR)/Criterion
 CRITERION_LIB  = $(CRITERION_DIR)/build/src
 CRITERION_INC  = $(CRITERION_DIR)/include
 
@@ -68,9 +71,11 @@ printcov:
 # Check isset Criterion
 check-criterion:
 	@if [ ! -f "$(CRITERION_LIB)/libcriterion.a" ] && [ ! -f "$(CRITERION_LIB)/libcriterion.so" ]; then \
-		echo "❌ Criterion not found in $(CRITERION_LIB)"; \
-		echo "👉 Please build Criterion first (e.g., run: cd $(CRITERION_DIR) && meson build && ninja -C build)"; \
-		exit 1; \
+		echo "Building Criterion..."; \
+		cd $(CRITERION_DIR) && \
+		git checkout $(CRITERION_VERSION) && \
+		meson setup build && \
+		meson compile -C build; \
 	fi
 
 docs:
