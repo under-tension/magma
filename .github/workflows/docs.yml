@@ -23,7 +23,10 @@ jobs:
       uses: actions/configure-pages@v5
 
     - name: Install Doxygen
-      uses: ssciwr/doxygen-install@v1
+      uses: ssciwr/doxygen-install@v2
+
+    - name: Install Graphviz
+      uses: ts-graphviz/setup-graphviz@v2
 
     - name: Generate docs
       run: make docs
