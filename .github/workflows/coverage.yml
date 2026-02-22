@@ -1,0 +1,33 @@
+name: coverage
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc make meson ninja-build libgit2-dev libffi-dev pkg-config cmake git gcovr
+
+    - name: Build and run unit tests
+      run: make test && ./bin/test
+
+    - name: Generate coverage report
+      run: make coverage
+
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v4
+      env:
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+      with:
+        args: >
+          --define sonar.coverageReportPaths=./bin/coverage.xml
