@@ -82,7 +82,7 @@ check-criterion:
 docs:
 	doxygen Doxyfile
 
-lint:
+cppcheck:
 	cppcheck \
 	--enable=all \
 	--std=c2x \

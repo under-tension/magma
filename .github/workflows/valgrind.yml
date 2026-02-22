@@ -1,0 +1,33 @@
+name: valgrind
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  valgrind:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc make meson ninja-build libgit2-dev libffi-dev pkg-config cmake git valgrind
+
+    - name: Build unit tests
+      run: make test
+
+    - name: Run Valgrind
+      run: make valgrind
+
