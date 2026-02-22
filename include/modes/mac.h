@@ -27,7 +27,7 @@ MagmaResult magma_mac(
 /**
  * @brief Calculates additional keys K1 and K2 used in the MAC generation process.
  * 
- * @related magma_mac
+ * @note Using in function @ref magma_mac
  * 
  * @param K1_output Pointer to the output buffer for K1.
  * @param K2_output Pointer to the output buffer for K2.

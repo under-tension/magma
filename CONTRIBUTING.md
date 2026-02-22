@@ -16,11 +16,17 @@ Create a reliable cryptographic library with good documentation and easy to unde
 
 ## 🔗 Dependencies for local development
 
-- GCC 12.2.0
-- Cppcheck 2.19.0
-- Valgrind 3.19.0
-- gcovr 5.2
-- Doxygen 1.16.1
+- GCC >=12.2.0
+- Cppcheck >=2.19.0
+- Valgrind >=3.19.0
+- gcovr >=5.2
+- Doxygen >=1.16.1
+- Meson >=1.7.0
+- Ninja >=1.11.1
+- Cmake >=3.25.1
+- libgit2-dev
+- libffi-dev
+- pkg-config
 
 ## 🏗️ Architecture
 

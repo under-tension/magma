@@ -45,17 +45,10 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc make meson ninja-build git
+        sudo apt-get install -y gcc make meson ninja-build libgit2-dev libffi-dev pkg-config cmake git
 
-    - name: Run unit tests
+    - name: Build and run unit tests
       run: make test && ./bin/test
-
-    - name: Upload test artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-artifacts
-        path: |
-          bin/
 
   valgrind:
     runs-on: ubuntu-latest
@@ -63,16 +56,16 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc make meson ninja-build git valgrind
+        sudo apt-get install -y gcc make meson ninja-build libgit2-dev libffi-dev pkg-config cmake git valgrind
 
-    - name: Download test artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: test-artifacts
+    - name: Build unit tests
+      run: make test
 
     - name: Run Valgrind
       run: make valgrind

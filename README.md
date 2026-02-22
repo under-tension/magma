@@ -21,7 +21,7 @@ Cryptographic library for working with the block width MAGMA aka GOST 34.12-2015
 1) Cloning
 
 ```bash
-git clone https://github.com/under-tension/magma.git magma
+git clone --recursive https://github.com/under-tension/magma.git magma
 cd ./magma
 ```
 
