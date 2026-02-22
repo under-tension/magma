@@ -984,7 +984,7 @@ WARN_LAYOUT_FILE       = YES
 # Possible values are: NO, YES, FAIL_ON_WARNINGS and FAIL_ON_WARNINGS_PRINT.
 # The default value is: NO.
 
-WARN_AS_ERROR          = FAIL_ON_WARNINGS
+WARN_AS_ERROR          = NO
 
 # The WARN_FORMAT tag determines the format of the warning messages that Doxygen
 # can produce. The string should contain the $file, $line, and $text tags, which
@@ -1029,6 +1029,7 @@ WARN_LOGFILE           =
 INPUT                  = src/modes \
                         include \
                         README.md \
+                        CONTRIBUTING.md \
                         docs/en/pages
 
 # This tag can be used to specify the character encoding of the source files

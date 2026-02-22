@@ -59,7 +59,9 @@ check-bin-dir:
 build_test: $(SRCS) $(TEST_SRC) | check-criterion
 	gcc $(CTESTFLAGS) $(INCLUDES) -I$(CRITERION_INC) \
 		$(TEST_SRC) $(SRCS) \
-		-L$(CRITERION_LIB) -lcriterion -lpthread -lm \
+		-L$(CRITERION_LIB) \
+		-Wl,-rpath,'$$ORIGIN'/../third_party/Criterion/build/src \
+		-lcriterion -lpthread -lm \
 		-o $(TEST_BIN)
 
 clean-coverage:
@@ -68,7 +70,6 @@ clean-coverage:
 printcov:
 	gcovr --root ./ --object-directory ./bin --exclude 'test|third_party'
 
-# Check isset Criterion
 check-criterion:
 	@if [ ! -f "$(CRITERION_LIB)/libcriterion.a" ] && [ ! -f "$(CRITERION_LIB)/libcriterion.so" ]; then \
 		echo "Building Criterion..."; \
