@@ -67,8 +67,8 @@ build_test: $(SRCS) $(TEST_SRC) | check-criterion
 clean-coverage:
 	find . -name "*.gcda" -delete -o -name "*.gcno" -delete
 
-printcov:
-	gcovr --root ./ --object-directory ./bin --exclude 'test|third_party'
+coverage:
+	gcovr --root ./ --object-directory ./bin --exclude 'test|third_party|lib|build|bin' --sonarqube ./bin/coverage.xml
 
 check-criterion:
 	@if [ ! -f "$(CRITERION_LIB)/libcriterion.a" ] && [ ! -f "$(CRITERION_LIB)/libcriterion.so" ]; then \
