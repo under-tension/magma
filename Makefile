@@ -70,6 +70,9 @@ clean-coverage:
 coverage:
 	gcovr --root ./ --object-directory ./bin --exclude 'test|third_party|lib|build|bin' --sonarqube ./bin/coverage.xml
 
+print-coverage:
+	gcovr --root ./ --object-directory ./bin --exclude 'test|third_party|lib|build|bin'
+
 check-criterion:
 	@if [ ! -f "$(CRITERION_LIB)/libcriterion.a" ] && [ ! -f "$(CRITERION_LIB)/libcriterion.so" ]; then \
 		echo "Building Criterion..."; \

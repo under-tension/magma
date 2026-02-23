@@ -18,7 +18,22 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc make meson ninja-build libgit2-dev libffi-dev pkg-config cmake git gcovr
+        sudo apt-get install -y \
+          gcc \
+          make \
+          meson \
+          ninja-build \
+          libgit2-dev \
+          libffi-dev \
+          pkg-config \
+          cmake \
+          git \
+          gcovr \
+          bear
+
+    - name: Generate compile_commands.json
+      run: |
+        bear -- make
 
     - name: Build and run unit tests
       run: make test && ./bin/test
@@ -27,10 +42,13 @@ jobs:
       run: make coverage
 
     - name: SonarQube Scan
-      uses: SonarSource/sonarqube-scan-action@7295e71c9583053f5bf40e9d4068a0c974603ec8
+      uses: SonarSource/sonarqube-scan-action@v7
       env:
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} 
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }} 
       with:
         args: >
+          -Dsonar.organization=under-tension
+          -Dsonar.projectKey=under-tension_magma
+          -Dsonar.cfamily.compile-commands=./compile_commands.json
           --define sonar.coverageReportPaths=./bin/coverage.xml
