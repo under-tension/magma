@@ -48,5 +48,14 @@ jobs:
         args: >
           -Dsonar.organization=under-tension
           -Dsonar.projectKey=under-tension_magma
+
           -Dsonar.cfamily.compile-commands=./compile_commands.json
+
           --define sonar.coverageReportPaths=./bin/coverage.xml
+          -Dsonar.sources=src,include
+
+          -Dsonar.c.file.suffixes=.c
+          -Dsonar.cpp.file.suffixes=.cpp,.cc,.cxx
+          -Dsonar.header.file.suffixes=.h,.hpp
+          
+          -Dsonar.tests=test
