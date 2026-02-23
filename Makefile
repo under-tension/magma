@@ -68,11 +68,10 @@ clean-coverage:
 	find . -name "*.gcda" -delete -o -name "*.gcno" -delete
 
 coverage:
-	gcovr --root ./ --object-directory ./bin --exclude 'test|third_party|lib|build|bin' --sonarqube ./bin/coverage.xml
+	gcovr --root ./ --object-directory ./bin --filter src --filter include --sonarqube ./bin/coverage.xml
 
 print-coverage:
-	gcovr --root ./ --object-directory ./bin --exclude 'test|third_party|lib|build|bin'
-
+	gcovr --root ./ --object-directory ./bin --filter src --filter include
 check-criterion:
 	@if [ ! -f "$(CRITERION_LIB)/libcriterion.a" ] && [ ! -f "$(CRITERION_LIB)/libcriterion.so" ]; then \
 		echo "Building Criterion..."; \
