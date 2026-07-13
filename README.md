@@ -9,14 +9,16 @@ Cryptographic library for working with the block width MAGMA aka GOST 34.12-2015
 
 ## ✨ Features
 
-#### Supported modes
+- ##### Protected from timing attacks
 
-- [x] Electronic Codebook (ECB)
-- [x] Cipher Block Chaining (CBC)
-- [x] Cipher Feedback (CFB)
-- [x] Output Feedback (OFB)
-- [x] Counter (CTR)
-- [x] Message authentication code (MAC)
+- ##### Supported modes
+
+    - [x] Electronic Codebook (ECB)
+    - [x] Cipher Block Chaining (CBC)
+    - [x] Cipher Feedback (CFB)
+    - [x] Output Feedback (OFB)
+    - [x] Counter (CTR)
+    - [x] Message authentication code (MAC)
 
 ## 🚀 Get started
 
