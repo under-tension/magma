@@ -14,5 +14,6 @@ void uint32_to_bytes(const uint32_t input, unsigned char *output);
 uint32_t bytes_to_uint32_be(const unsigned char *input);
 void uint32_to_bytes_be(const uint32_t input, unsigned char *output);
 void shift_left_one(unsigned char *input, size_t length);
+int constant_time_compare(const unsigned char *a, const unsigned char *b, size_t len);
 
 #endif

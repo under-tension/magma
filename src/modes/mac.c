@@ -72,6 +72,36 @@ MagmaResult magma_mac(
     return MAGMA_SUCCESS;
 }
 
+MagmaResult magma_mac_verify(
+    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
+    const size_t mac_size,
+    const unsigned char *input,
+    const unsigned char *mac,
+    const size_t length,
+    int *result
+)
+{
+    if (keys == NULL || input == NULL || mac == NULL || result == NULL) {
+        return MAGMA_ERROR_NULL_POINTER;
+    }
+
+    if (mac_size == 0 || mac_size > MAGMA_BLOCK_SIZE || length == 0) {
+        return MAGMA_ERROR_INVALID_LENGTH;
+    }
+
+    unsigned char computed_mac[MAGMA_BLOCK_SIZE] = {0};
+
+    MagmaResult mac_result = magma_mac(keys, mac_size, input, computed_mac, length);
+
+    if (mac_result != MAGMA_SUCCESS) {
+        return mac_result;
+    }
+
+    *result = constant_time_compare(computed_mac, mac, mac_size);
+
+    return MAGMA_SUCCESS;
+}
+
 MagmaResult calc_additional_keys(
     unsigned char K1_output[MAGMA_BLOCK_SIZE],
     unsigned char K2_output[MAGMA_BLOCK_SIZE],
