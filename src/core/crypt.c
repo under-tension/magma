@@ -12,6 +12,26 @@ static int Pi[8][16] = {
 
 };
 
+/*
+ * Constant-time substitution-table lookup.
+ *
+ * A plain `row[value]` leaks `value` (which is derived from the secret
+ * `plaintext + key`) through the data cache access pattern. Instead we scan
+ * every entry of the row and select the matching one with a branchless mask,
+ * so the memory access pattern is independent of the secret index.
+ */
+static uint32_t ct_sbox_lookup(const int *row, unsigned value)
+{
+    uint32_t result = 0;
+
+    for (unsigned k = 0; k < 16; k++) {
+        uint32_t mask = -(uint32_t)(k == value);
+        result |= mask & (uint32_t)row[k];
+    }
+
+    return result;
+}
+
 uint32_t T(const uint32_t input)
 {
     uint32_t result = 0;
@@ -19,7 +39,7 @@ uint32_t T(const uint32_t input)
     for (int i = 0; i < 8; i++) {
       unsigned shift_bits = i * 4;
       unsigned value = (input >> shift_bits) & 0x0f;
-      uint32_t replace = Pi[i][value];
+      uint32_t replace = ct_sbox_lookup(Pi[i], value);
 
       result |= replace << shift_bits;
     }
