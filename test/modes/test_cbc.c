@@ -157,3 +157,49 @@ Test(test_cbc, decrypt_error_invalid_length) {
     MagmaResult result_code = magma_decrypt_cbc(keys, iv, 24, cipher_text, result, 31);
     cr_assert(result_code == MAGMA_ERROR_INVALID_LENGTH);
 }
+
+Test(test_cbc, encrypt_error_iv_empty) {
+    unsigned char plain_text[32];
+    hex_to_bytes("92def06b3c130a59db54c704f8189d204a98fb2e67a8024c8912409b17b57e41", plain_text, 64);
+
+    unsigned char master_key[32];
+    hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
+
+    unsigned char iv[23];
+    hex_to_bytes("1234567890abcdef234567890abcdef134567890abcdef", iv, 46);
+
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
+
+    unsigned char result[32] = {0};
+
+    MagmaResult result_code = magma_encrypt_cbc(keys, iv, 23, plain_text, result, 32);
+    cr_assert(result_code == MAGMA_ERROR_IV_EMPTY);
+
+    result_code = magma_encrypt_cbc(keys, iv, 0, plain_text, result, 32);
+    cr_assert(result_code == MAGMA_ERROR_IV_EMPTY);
+}
+
+Test(test_cbc, decrypt_error_iv_empty) {
+    unsigned char cipher_text[32];
+    hex_to_bytes("96d1b05eea683919aff76129abb937b95058b4a1c4bc001920b78b1a7cd7e667", cipher_text, 64);
+
+    unsigned char master_key[32];
+    hex_to_bytes("ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", master_key, 64);
+
+    unsigned char iv[23];
+    hex_to_bytes("1234567890abcdef234567890abcdef134567890abcdef", iv, 46);
+
+    unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN] = {0};
+    MagmaResult key_result = key_expand(master_key, keys);
+    cr_assert(key_result == MAGMA_SUCCESS);
+
+    unsigned char result[32] = {0};
+
+    MagmaResult result_code = magma_decrypt_cbc(keys, iv, 23, cipher_text, result, 32);
+    cr_assert(result_code == MAGMA_ERROR_IV_EMPTY);
+
+    result_code = magma_decrypt_cbc(keys, iv, 0, cipher_text, result, 32);
+    cr_assert(result_code == MAGMA_ERROR_IV_EMPTY);
+}
