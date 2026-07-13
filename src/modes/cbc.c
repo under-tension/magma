@@ -17,6 +17,10 @@ MagmaResult magma_encrypt_cbc(
         return MAGMA_ERROR_INVALID_LENGTH;
     }
 
+    if (iv_length == 0 || iv_length % MAGMA_BLOCK_SIZE != 0) {
+        return MAGMA_ERROR_IV_EMPTY;
+    }
+
     size_t shift_register = 0;
     unsigned char reg[iv_length];
     memcpy(reg, iv, iv_length);
@@ -66,6 +70,10 @@ MagmaResult magma_decrypt_cbc(
 
     if (length == 0 || length % MAGMA_BLOCK_SIZE != 0) {
         return MAGMA_ERROR_INVALID_LENGTH;
+    }
+
+    if (iv_length == 0 || iv_length % MAGMA_BLOCK_SIZE != 0) {
+        return MAGMA_ERROR_IV_EMPTY;
     }
 
     size_t shift_register = 0;
