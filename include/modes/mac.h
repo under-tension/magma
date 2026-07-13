@@ -25,6 +25,25 @@ MagmaResult magma_mac(
 );
 
 /**
+ * @brief Verifies a Message Authentication Code (MAC) in constant time.
+ * @param keys Expanded iteration keys.
+ * @param mac_size Size of the MAC in bytes.
+ * @param input Pointer to the input data.
+ * @param mac Pointer to the MAC to verify against.
+ * @param length Length of the input data in bytes.
+ * @param result Set to 1 if the MAC is valid, 0 otherwise. Only meaningful when MAGMA_SUCCESS is returned.
+ * @return MAGMA_SUCCESS on success, error code otherwise.
+ */
+MagmaResult magma_mac_verify(
+    const unsigned char keys[ITER_KEYS_COUNT][ITER_KEY_LEN],
+    const size_t mac_size,
+    const unsigned char *input,
+    const unsigned char *mac,
+    const size_t length,
+    int *result
+);
+
+/**
  * @brief Calculates additional keys K1 and K2 used in the MAC generation process.
  * 
  * @note Using in function @ref magma_mac

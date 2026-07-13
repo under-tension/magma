@@ -69,3 +69,14 @@ void uint32_to_bytes_be(const uint32_t input, unsigned char *output)
       output[3-i] = (input >> (8*i)) & 0xFF;
   }
 }
+
+int constant_time_compare(const unsigned char *a, const unsigned char *b, size_t len)
+{
+    unsigned char diff = 0;
+
+    for (size_t i = 0; i < len; i++) {
+        diff |= a[i] ^ b[i];
+    }
+
+    return diff == 0;
+}
