@@ -37,6 +37,8 @@ MagmaResult magma_encrypt_cbc(
 
         // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
+            secure_zero(reg, iv_length);
+
             return encrypt_block_result;
         }
         // GCOVR_EXCL_STOP
@@ -51,6 +53,8 @@ MagmaResult magma_encrypt_cbc(
             shift_register = 0;
         }
     }
+
+    secure_zero(reg, iv_length);
 
     return MAGMA_SUCCESS;
 }
@@ -88,6 +92,8 @@ MagmaResult magma_decrypt_cbc(
 
         // GCOVR_EXCL_START
         if (decrypt_block_result != MAGMA_SUCCESS) {
+            secure_zero(reg, iv_length);
+
             return decrypt_block_result;
         }
         // GCOVR_EXCL_STOP
@@ -106,6 +112,8 @@ MagmaResult magma_decrypt_cbc(
             shift_register = 0;
         }
     }
+
+    secure_zero(reg, iv_length);
 
     return MAGMA_SUCCESS;
 }

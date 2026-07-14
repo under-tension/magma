@@ -32,6 +32,9 @@ MagmaResult magma_encrypt_ecb(
         for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             output[(i * MAGMA_BLOCK_SIZE) + j] = cipher_block[j];
         }
+
+        secure_zero(plain_block, MAGMA_BLOCK_SIZE);
+        secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
     }
 
     return MAGMA_SUCCESS;
@@ -69,6 +72,9 @@ MagmaResult magma_decrypt_ecb(
         for (unsigned j = 0; j < MAGMA_BLOCK_SIZE; j++) {
             output[(i * MAGMA_BLOCK_SIZE) + j] = cipher_block[j];
         }
+
+        secure_zero(plain_block, MAGMA_BLOCK_SIZE);
+        secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
     }
 
     return MAGMA_SUCCESS;

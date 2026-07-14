@@ -34,6 +34,8 @@ MagmaResult magma_encrypt_ofb(
 
         // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
+            secure_zero(reg, iv_length);
+
             return encrypt_block_result;
         }
         // GCOVR_EXCL_STOP
@@ -60,6 +62,8 @@ MagmaResult magma_encrypt_ofb(
 
         // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
+            secure_zero(reg, iv_length);
+
             return encrypt_block_result;
         }
         // GCOVR_EXCL_STOP
@@ -68,6 +72,8 @@ MagmaResult magma_encrypt_ofb(
             output[offset + j] = input[offset + j] ^ cipher_block[j];
         }
     }
+
+    secure_zero(reg, iv_length);
 
     return MAGMA_SUCCESS;
 }
