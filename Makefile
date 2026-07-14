@@ -18,7 +18,6 @@ TEST_SRC_DIR := ./test
 TEST_SRC = $(shell find $(TEST_SRC_DIR) -name '*.c')
 TEST_BIN = ./bin/test
 
-CRITERION_VERSION ?= v2.4.3
 CRITERION_DIR ?= $(THIRD_PARTY_DIR)/Criterion
 CRITERION_LIB  = $(CRITERION_DIR)/build/src
 CRITERION_INC  = $(CRITERION_DIR)/include
@@ -76,7 +75,6 @@ check-criterion:
 	@if [ ! -f "$(CRITERION_LIB)/libcriterion.a" ] && [ ! -f "$(CRITERION_LIB)/libcriterion.so" ]; then \
 		echo "Building Criterion..."; \
 		cd $(CRITERION_DIR) && \
-		git checkout $(CRITERION_VERSION) && \
 		meson setup build && \
 		meson compile -C build; \
 	fi
