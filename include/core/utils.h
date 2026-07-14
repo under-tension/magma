@@ -16,4 +16,11 @@ void uint32_to_bytes_be(const uint32_t input, unsigned char *output);
 void shift_left_one(unsigned char *input, size_t length);
 int constant_time_compare(const unsigned char *a, const unsigned char *b, size_t len);
 
+/**
+ * @param p A pointer to the resource to be reset.
+ * @param len The length to be reset to zero 
+ * @brief An analogue of memset_explicit for older versions of glibc
+ */
+void secure_zero(void *p, size_t len);
+
 #endif

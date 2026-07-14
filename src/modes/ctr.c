@@ -35,6 +35,8 @@ MagmaResult magma_encrypt_ctr(
             output[offset + j] = input[offset + j] ^ cipher_block[j];
         }
 
+        secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
+
         offset += MAGMA_BLOCK_SIZE;
         counter++;
     }
@@ -55,7 +57,11 @@ MagmaResult magma_encrypt_ctr(
         for (size_t j = 0; j < length % MAGMA_BLOCK_SIZE; j++) {
             output[offset + j] = input[offset + j] ^ cipher_block[j];
         }
+
+        secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
     }
+
+    secure_zero(counter_bytes, MAGMA_BLOCK_SIZE);
 
     return MAGMA_SUCCESS;
 }

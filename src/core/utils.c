@@ -59,7 +59,7 @@ void uint32_to_bytes(const uint32_t input, unsigned char *output) {
 
 uint32_t bytes_to_uint32_be(const unsigned char *input)
 {
-     uint32_t result = ((input[3]) | (input[2] << 8) | (input[1] << 16) | (input[0] << 24));
+     uint32_t result = (((uint32_t)input[3]) | ((uint32_t)input[2] << 8) | ((uint32_t)input[1] << 16) | ((uint32_t)input[0] << 24));
      return result;
 }
 
@@ -79,4 +79,12 @@ int constant_time_compare(const unsigned char *a, const unsigned char *b, size_t
     }
 
     return diff == 0;
+}
+
+void secure_zero(void *p, size_t len)
+{
+    volatile unsigned char *vp = (volatile unsigned char *)p;
+    while (len--) {
+        *(vp++) = 0;
+    }
 }

@@ -9,9 +9,11 @@ Cryptographic library for working with the block width MAGMA aka GOST 34.12-2015
 
 ## ✨ Features
 
-- ##### Protected from timing attacks
+- **Protected from timing attacks**
 
-- ##### Supported modes
+- **Sensitive data zeroization**
+
+- **Supported modes**
 
     - [x] Electronic Codebook (ECB)
     - [x] Cipher Block Chaining (CBC)

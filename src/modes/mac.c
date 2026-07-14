@@ -25,6 +25,9 @@ MagmaResult magma_mac(
     MagmaResult calc_additional_keys_result = calc_additional_keys(K1, K2, keys);
 
     if (calc_additional_keys_result != MAGMA_SUCCESS) {
+        secure_zero(K1, MAGMA_BLOCK_SIZE);
+        secure_zero(K2, MAGMA_BLOCK_SIZE);
+
         return calc_additional_keys_result;
     }
 
@@ -58,17 +61,33 @@ MagmaResult magma_mac(
 
         MagmaResult encrypt_result = magma_encrypt_block(plain_block, cipher_block, keys);
 
+        secure_zero(plain_block, MAGMA_BLOCK_SIZE);
+
         // GCOVR_EXCL_START
         if (encrypt_result != MAGMA_SUCCESS) {
+            secure_zero(K1, MAGMA_BLOCK_SIZE);
+            secure_zero(K2, MAGMA_BLOCK_SIZE);
+            secure_zero(previous_cipher_block, MAGMA_BLOCK_SIZE);
+            secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
+            secure_zero(result, MAGMA_BLOCK_SIZE);
+
             return encrypt_result;
         }
         // GCOVR_EXCL_STOP
 
         memcpy(previous_cipher_block, cipher_block, MAGMA_BLOCK_SIZE);
         memcpy(result, cipher_block, MAGMA_BLOCK_SIZE);
+
+        secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
     }
 
     memcpy(mac, result, mac_size < MAGMA_BLOCK_SIZE ? mac_size : MAGMA_BLOCK_SIZE);
+
+    secure_zero(K1, MAGMA_BLOCK_SIZE);
+    secure_zero(K2, MAGMA_BLOCK_SIZE);
+    secure_zero(previous_cipher_block, MAGMA_BLOCK_SIZE);
+    secure_zero(result, MAGMA_BLOCK_SIZE);
+
     return MAGMA_SUCCESS;
 }
 
@@ -136,6 +155,9 @@ MagmaResult calc_additional_keys(
 
     memcpy(K1_output, K1, MAGMA_BLOCK_SIZE);
     memcpy(K2_output, K2, MAGMA_BLOCK_SIZE);
+
+    secure_zero(K1, MAGMA_BLOCK_SIZE);
+    secure_zero(K2, MAGMA_BLOCK_SIZE);
 
     return MAGMA_SUCCESS;
 }

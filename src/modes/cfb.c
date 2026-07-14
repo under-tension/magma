@@ -34,6 +34,9 @@ MagmaResult magma_encrypt_cfb(
 
         // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
+            secure_zero(reg, iv_length);
+            secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
+
             return encrypt_block_result;
         }
         // GCOVR_EXCL_STOP
@@ -51,6 +54,8 @@ MagmaResult magma_encrypt_cfb(
         }
 
         offset += MAGMA_BLOCK_SIZE;
+
+        secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
     }
 
     if (length % MAGMA_BLOCK_SIZE > 0) {
@@ -60,6 +65,9 @@ MagmaResult magma_encrypt_cfb(
 
         // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
+            secure_zero(reg, iv_length);
+            secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
+
             return encrypt_block_result;
         }
         // GCOVR_EXCL_STOP
@@ -67,7 +75,11 @@ MagmaResult magma_encrypt_cfb(
         for (size_t j = 0; j < length % MAGMA_BLOCK_SIZE; j++) {
             output[offset + j] = input[offset + j] ^ cipher_block[j];
         }
+
+        secure_zero(cipher_block, MAGMA_BLOCK_SIZE);
     }
+
+    secure_zero(reg, iv_length);
 
     return MAGMA_SUCCESS;
 }
@@ -106,6 +118,8 @@ MagmaResult magma_decrypt_cfb(
 
         // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
+            secure_zero(reg, iv_length);
+
             return encrypt_block_result;
         }
         // GCOVR_EXCL_STOP
@@ -132,6 +146,8 @@ MagmaResult magma_decrypt_cfb(
 
         // GCOVR_EXCL_START
         if (encrypt_block_result != MAGMA_SUCCESS) {
+            secure_zero(reg, iv_length);
+
             return encrypt_block_result;
         }
         // GCOVR_EXCL_STOP
@@ -140,6 +156,8 @@ MagmaResult magma_decrypt_cfb(
             output[offset + j] = input[offset + j] ^ cipher_block[j];
         }
     }
+
+    secure_zero(reg, iv_length);
 
     return MAGMA_SUCCESS;
 }
